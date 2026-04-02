@@ -1,10 +1,401 @@
+// ===== Router Configuration =====
+const Router = {
+    currentRoute: '/home',
+
+    routes: {
+        '/home': 'homePage',
+        '/prediction': 'predictionPage',
+        '/team': 'teamPage'
+    },
+
+    init() {
+        // Handle initial route
+        this.handleRoute();
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', () => {
+            this.handleRoute();
+        });
+
+        // Handle navigation clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.nav-link') || e.target.closest('.nav-link')) {
+                e.preventDefault();
+                const link = e.target.closest('.nav-link') || e.target;
+                const route = link.getAttribute('data-route') || link.getAttribute('href');
+                this.navigate(route);
+            }
+        });
+    },
+
+    navigate(route) {
+        if (this.routes[route]) {
+            this.currentRoute = route;
+            window.history.pushState({}, '', route);
+            this.handleRoute();
+        }
+    },
+
+    handleRoute() {
+        const path = window.location.pathname;
+        const route = this.routes[path] || this.routes['/home'];
+
+        // Update active nav link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if ((link.getAttribute('data-route') || link.getAttribute('href')) === path) {
+                link.classList.add('active');
+            }
+        });
+
+        // Render page
+        this.renderPage(route);
+    },
+
+    renderPage(pageName) {
+        const appContent = document.getElementById('app-content');
+
+        switch (pageName) {
+            case 'homePage':
+                appContent.innerHTML = this.getHomePageHTML();
+                break;
+            case 'predictionPage':
+                appContent.innerHTML = this.getPredictionPageHTML();
+                // Initialize prediction page after rendering
+                setTimeout(() => this.initPredictionPage(), 100);
+                break;
+            case 'teamPage':
+                appContent.innerHTML = this.getTeamPageHTML();
+                break;
+            default:
+                appContent.innerHTML = this.getHomePageHTML();
+        }
+    },
+
+    getHomePageHTML() {
+        return `
+            <div class="container">
+                <section class="hero-section">
+                    <h2 class="hero-title">Coffee Leaf Nutrition Analysis</h2>
+                    <p class="hero-description">Understanding nutrient deficiencies in coffee plants for optimal crop health</p>
+                </section>
+
+                <div class="info-grid">
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>🌱 Understanding Coffee Leaf Nutrition</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-image-container">
+                                <img src="https://www.aboutcoffee.org/wp-content/uploads/2024/10/ripe-coffee-cherries-on-branch-of-coffee-tree-1024x576.jpg" 
+                                     alt="Coffee plantation with green leaves" 
+                                     class="info-image"
+                                     onerror="this.src='https://www.aboutcoffee.org/wp-content/uploads/2024/10/ripe-coffee-cherries-on-branch-of-coffee-tree-1024x576.jpg'">
+                            </div>
+                            <p>Coffee plants require essential macronutrients for healthy growth and optimal yield. The three primary macronutrients are Nitrogen (N), Phosphorus (P), and Potassium (K), each playing a crucial role in plant development.</p>
+                            
+                            <h4>Why Leaf Analysis Matters</h4>
+                            <p>Leaf analysis helps identify nutrient deficiencies early, allowing farmers to take corrective measures before significant crop damage occurs. Visual symptoms on leaves are often the first indicators of nutrient imbalances.</p>
+                        </div>
+                    </section>
+
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>🍃 Nitrogen (N) Deficiency</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-image-container">
+                                <img src="https://happyhydro.com/cdn/shop/articles/img-1691934190660.jpg?v=1695236089" 
+                                     alt="Coffee leaf with nitrogen deficiency showing yellowing" 
+                                     class="info-image"
+                                     onerror="this.src='https://happyhydro.com/cdn/shop/articles/img-1691934190660.jpg?v=1695236089'">
+                            </div>
+                            <p><strong>Symptoms:</strong> Yellowing of older leaves, stunted growth, reduced leaf size</p>
+                            <p><strong>Role:</strong> Essential for chlorophyll production, leaf growth, and protein synthesis</p>
+                            <p><strong>Impact:</strong> Reduced photosynthesis, poor vegetative growth, lower yields</p>
+                            <ul>
+                                <li>Critical for early growth stages</li>
+                                <li>Affects overall plant vigor</li>
+                                <li>Most commonly deficient in coffee plantations</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>🌿 Phosphorus (P) Deficiency</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-image-container">
+                                <img src="https://di.myupchar.com/2223/phosphorus-deficiency-phosphorus-ki-kami-ke-lakshan-karan-upchar-bachav-ilaj-dawa-in-hindi.webp" 
+                                     alt="Coffee plant roots and soil" 
+                                     class="info-image"
+                                     onerror="this.src='https://di.myupchar.com/2223/phosphorus-deficiency-phosphorus-ki-kami-ke-lakshan-karan-upchar-bachav-ilaj-dawa-in-hindi.webp'">
+                            </div>
+                            <p><strong>Symptoms:</strong> Dark green or purplish leaves, poor root development, delayed flowering</p>
+                            <p><strong>Role:</strong> Energy transfer (ATP), root development, flowering, and fruiting</p>
+                            <p><strong>Impact:</strong> Weak root systems, poor fruit set, delayed maturation</p>
+                            <ul>
+                                <li>Essential for root establishment</li>
+                                <li>Critical during flowering phase</li>
+                                <li>Important for energy metabolism</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>🌾 Potassium (K) Deficiency</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-image-container">
+                                <img src="https://multisite-assets.icl-growingsolutions.com/wp-content/uploads/sites/12/2024/06/03063204/US_Ag_PotssiumDeficiency_Thumbnail.jpg" 
+                                     alt="Coffee beans and healthy coffee plant" 
+                                     class="info-image"
+                                     onerror="this.src='https://multisite-assets.icl-growingsolutions.com/wp-content/uploads/sites/12/2024/06/03063204/US_Ag_PotssiumDeficiency_Thumbnail.jpg'">
+                            </div>
+                            <p><strong>Symptoms:</strong> Scorched leaf margins, weak stems, poor fruit quality</p>
+                            <p><strong>Role:</strong> Water regulation, disease resistance, fruit quality, stress tolerance</p>
+                            <p><strong>Impact:</strong> Reduced drought tolerance, increased disease susceptibility, poor bean quality</p>
+                            <ul>
+                                <li>Improves stress resistance</li>
+                                <li>Enhances bean quality and flavor</li>
+                                <li>Important for disease resistance</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>🔬 How Our Prediction Works</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-image-container">
+                                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop" 
+                                     alt="AI technology analyzing plant data" 
+                                     class="info-image"
+                                     onerror="this.src='https://images.pexels.com/photos/1072824/pexels-photo-1072824.jpeg?w=600&h=400&fit=crop'">
+                            </div>
+                            <p>Our advanced deep learning model uses Convolutional Neural Networks (CNN) to analyze coffee leaf images and detect nutrient deficiencies with high accuracy.</p>
+                            <ol>
+                                <li><strong>Image Upload:</strong> Upload a clear image of your coffee leaf</li>
+                                <li><strong>AI Analysis:</strong> Our model analyzes leaf color, texture, and patterns</li>
+                                <li><strong>Detection:</strong> Identifies specific nutrient deficiencies (N, P, K)</li>
+                                <li><strong>Recommendations:</strong> Provides targeted treatment recommendations</li>
+                            </ol>
+                            <div style="margin-top: 1.5rem;">
+                                <a href="/prediction" class="btn btn-primary" data-route="/prediction">
+                                    Try Prediction Now →
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="info-card card">
+                        <div class="card-header">
+                            <h3>📊 Model Performance</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Our model has been trained on thousands of coffee leaf images and achieves:</p>
+                            <ul>
+                                <li><strong>High Accuracy:</strong> 92%+ in nutrient deficiency detection</li>
+                                <li><strong>Fast Analysis:</strong> Results in seconds</li>
+                                <li><strong>Reliable:</strong> Consistent performance across different leaf conditions</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        `;
+    },
+
+    getPredictionPageHTML() {
+        return `
+            <div class="container">
+                <section class="hero-section">
+                    <h2 class="hero-title">Intelligent Leaf Nutrition Analysis</h2>
+                    <p class="hero-description">Upload a coffee leaf image to detect nutrient deficiencies using advanced AI technology and receive personalized recommendations for optimal plant health</p>
+                </section>
+
+                <div class="app-grid">
+                    <section class="upload-section card">
+                        <div class="card-header">
+                            <h3>Upload Leaf Image</h3>
+                            <p>Supported formats: PNG, JPEG, JPG</p>
+                        </div>
+
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg" hidden>
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <h4>Click to upload or drag and drop</h4>
+                                <p>Maximum file size: 10MB</p>
+                            </div>
+                            <div class="image-preview" id="imagePreview" style="display: none;">
+                                <img id="previewImage" src="" alt="Preview">
+                                <button class="remove-btn" id="removeBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" id="analyzeBtn" disabled type="button">
+                            <span class="btn-text">Analyze Leaf</span>
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </section>
+
+                    <section class="results-section card" id="resultsSection" style="display: none;">
+                        <div class="card-header">
+                            <h3>Analysis Results</h3>
+                        </div>
+                        <div class="result-content">
+                            <div class="status-badge" id="statusBadge">
+                                <div class="status-icon" id="statusIcon"></div>
+                                <div class="status-text">
+                                    <span class="status-label">Diagnosis</span>
+                                    <span class="status-value" id="diagnosisText">-</span>
+                                </div>
+                            </div>
+                            <div class="confidence-meter">
+                                <div class="confidence-label">
+                                    <span>Confidence Level</span>
+                                    <span id="confidenceValue">0%</span>
+                                </div>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" id="confidenceFill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="recommendations-section card" id="recommendationsSection" style="display: none;">
+                        <div class="card-header">
+                            <h3>Nutrient Recommendations</h3>
+                            <p>Based on the detected deficiency</p>
+                        </div>
+                        <div class="recommendations-grid" id="recommendationsGrid"></div>
+                        <div class="treatment-info" id="treatmentInfo"></div>
+                    </section>
+                </div>
+            </div>
+        `;
+    },
+
+    getTeamPageHTML() {
+        const members = [
+            { name: 'Supriya Menta', dept: 'Web Developer', imgSrc: 'Team/supriya.jpg', linkedin: 'http://linkedin.com/in/supriya-menta-09507a260', github: 'http://github.com/supriya-menta' },
+            { name: 'Nikhath', dept: 'ML Engineer', imgSrc: 'Team/nikhath-profile.jpg', linkedin: 'https://www.linkedin.com/in/mirza-nikhath-fathima-395a3a25b/', github: 'https://github.com/MirzaNikhathFathima' },
+            { name: 'Rohitha', dept: 'Full Stack Developer', imgSrc: 'Team/rohitha.jpg', linkedin: 'https://www.linkedin.com/in/rohitha-konasani-5a08a6278/', github: 'https://github.com/rohitha2006' },
+            { name: 'Charan', dept: 'UI/UX Designer', imgSrc: 'Team/charan.jpg', linkedin: 'http://linkedin.com/in/nallagatla-sricharan', github: 'https://github.com/nallagatl' }
+        ];
+
+        return `
+            <div class="container">
+                <section class="hero-section">
+                    <h2 class="hero-title">Meet Our Team</h2>
+                    <p class="hero-description">The dedicated professionals behind the Coffee Leaf Nutrition Prediction System</p>
+                </section>
+
+                <div class="team-grid">
+                    ${members.map(m => this.getTeamMemberHTML(m)).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    getTeamMemberHTML(member) {
+        return `
+            <div class="team-card card">
+                <div class="member-image-container">
+                    <img src="${member.imgSrc}" alt="${member.name}" class="member-image">
+                </div>
+                <div class="member-info">
+                    <h4>${member.name}</h4>
+                    <p class="member-dept">${member.dept}</p>
+                </div>
+                <div class="member-social">
+                    <a href="${member.linkedin}" class="social-link" target="_blank" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <a href="${member.github}" class="social-link" target="_blank" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    </a>
+                </div>
+            </div>
+        `;
+    },
+
+    initPredictionPage() {
+        // Re-initialize prediction page elements
+        const elements = {
+            uploadArea: document.getElementById('uploadArea'),
+            uploadPlaceholder: document.getElementById('uploadPlaceholder'),
+            fileInput: document.getElementById('fileInput'),
+            imagePreview: document.getElementById('imagePreview'),
+            previewImage: document.getElementById('previewImage'),
+            removeBtn: document.getElementById('removeBtn'),
+            analyzeBtn: document.getElementById('analyzeBtn'),
+            resultsSection: document.getElementById('resultsSection'),
+            recommendationsSection: document.getElementById('recommendationsSection'),
+            statusIcon: document.getElementById('statusIcon'),
+            diagnosisText: document.getElementById('diagnosisText'),
+            confidenceValue: document.getElementById('confidenceValue'),
+            confidenceFill: document.getElementById('confidenceFill'),
+            recommendationsGrid: document.getElementById('recommendationsGrid'),
+            treatmentInfo: document.getElementById('treatmentInfo')
+        };
+
+        // Store elements globally for prediction functions
+        window.predictionElements = elements;
+        window.currentFile = null;
+
+        // Initialize event listeners
+        if (elements.uploadArea) {
+            elements.uploadArea.addEventListener('click', (e) => {
+                if (e.target !== elements.removeBtn && !elements.removeBtn.contains(e.target)) {
+                    elements.fileInput.click();
+                }
+            });
+        }
+
+        if (elements.fileInput) {
+            elements.fileInput.addEventListener('change', handleFileSelect);
+        }
+
+        if (elements.uploadArea) {
+            elements.uploadArea.addEventListener('dragover', handleDragOver);
+            elements.uploadArea.addEventListener('dragleave', handleDragLeave);
+            elements.uploadArea.addEventListener('drop', handleDrop);
+        }
+
+        if (elements.removeBtn) {
+            elements.removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeImage();
+            });
+        }
+
+        if (elements.analyzeBtn) {
+            elements.analyzeBtn.addEventListener('click', analyzeImage);
+        }
+    }
+};
+
 // ===== Configuration =====
 const CONFIG = {
     maxFileSize: 10 * 1024 * 1024, // 10MB
     acceptedFormats: ['image/png', 'image/jpeg', 'image/jpg'],
-    apiEndpoint: 'https://coffee-nutrition.onrender.com/predict',
-    healthEndpoint: 'https://coffee-nutrition.onrender.com/health',
-    // Update these with your actual API endpoints
+    apiEndpoint: 'http://localhost:5000/predict',
 };
 
 // ===== Nutrient Information Database =====
@@ -12,45 +403,10 @@ const NUTRIENT_INFO = {
     'N_Deficiency': {
         diagnosis: 'Nitrogen Deficiency Detected',
         icon: '🍃',
-        causes: [
-            'Poor soil fertility or depleted nitrogen reserves',
-            'Excessive rainfall causing nitrogen leaching',
-            'Sandy soils with low organic matter content',
-            'Inadequate fertilization or improper timing',
-            'High crop density competing for available nitrogen'
-        ],
-        prevention: [
-            'Regular soil testing to monitor nitrogen levels',
-            'Apply organic matter (compost, manure) annually',
-            'Use slow-release nitrogen fertilizers',
-            'Practice proper crop rotation with legumes',
-            'Maintain optimal soil pH (6.0-6.5) for nutrient availability'
-        ],
         nutrients: {
-            nitrogen: {
-                name: 'Nitrogen (N)',
-                symbol: 'N',
-                status: 'needed',
-                description: 'Critical macronutrient needed immediately. Nitrogen is essential for leaf growth and chlorophyll production.'
-            },
-            phosphorus: {
-                name: 'Phosphorus (P)',
-                symbol: 'P',
-                status: 'sufficient',
-                description: 'Maintain current levels through regular fertilization schedule.'
-            },
-            potassium: {
-                name: 'Potassium (K)',
-                symbol: 'K',
-                status: 'sufficient',
-                description: 'Adequate levels detected. Continue monitoring.'
-            },
-            boron: {
-                name: 'Boron (B)',
-                symbol: 'B',
-                status: 'sufficient',
-                description: 'Micronutrient levels are within acceptable range.'
-            }
+            nitrogen: { name: 'Nitrogen (N)', symbol: 'N', status: 'needed', description: 'Critical macronutrient needed immediately. Nitrogen is essential for leaf growth and chlorophyll production.' },
+            phosphorus: { name: 'Phosphorus (P)', symbol: 'P', status: 'sufficient', description: 'Maintain current levels through regular fertilization schedule.' },
+            potassium: { name: 'Potassium (K)', symbol: 'K', status: 'sufficient', description: 'Adequate levels detected. Continue monitoring.' }
         },
         treatment: [
             'Apply nitrogen-rich fertilizer (urea or ammonium nitrate) at 50-100 kg/ha',
@@ -63,45 +419,10 @@ const NUTRIENT_INFO = {
     'P_Deficiency': {
         diagnosis: 'Phosphorus Deficiency Detected',
         icon: '🌿',
-        causes: [
-            'Acidic or alkaline soil pH limiting phosphorus availability',
-            'Cold soil temperatures reducing phosphorus uptake',
-            'High iron or aluminum content binding phosphorus',
-            'Compacted soil restricting root development',
-            'Low organic matter content in soil'
-        ],
-        prevention: [
-            'Maintain soil pH between 6.0-7.0 for optimal availability',
-            'Add organic matter to improve soil structure',
-            'Avoid over-liming which can reduce phosphorus availability',
-            'Use mycorrhizal fungi to enhance phosphorus uptake',
-            'Apply phosphorus fertilizers at planting time'
-        ],
         nutrients: {
-            nitrogen: {
-                name: 'Nitrogen (N)',
-                symbol: 'N',
-                status: 'sufficient',
-                description: 'Current nitrogen levels are adequate.'
-            },
-            phosphorus: {
-                name: 'Phosphorus (P)',
-                symbol: 'P',
-                status: 'needed',
-                description: 'Critical deficiency detected. Phosphorus is vital for root development and energy transfer.'
-            },
-            potassium: {
-                name: 'Potassium (K)',
-                symbol: 'K',
-                status: 'sufficient',
-                description: 'Potassium levels are within normal range.'
-            },
-            boron: {
-                name: 'Boron (B)',
-                symbol: 'B',
-                status: 'sufficient',
-                description: 'Micronutrient levels are acceptable.'
-            }
+            nitrogen: { name: 'Nitrogen (N)', symbol: 'N', status: 'sufficient', description: 'Current nitrogen levels are adequate.' },
+            phosphorus: { name: 'Phosphorus (P)', symbol: 'P', status: 'needed', description: 'Critical deficiency detected. Phosphorus is vital for root development and energy transfer.' },
+            potassium: { name: 'Potassium (K)', symbol: 'K', status: 'sufficient', description: 'Potassium levels are within normal range.' }
         },
         treatment: [
             'Apply phosphate fertilizer (DAP or SSP) at 40-60 kg P₂O₅/ha',
@@ -114,45 +435,10 @@ const NUTRIENT_INFO = {
     'K_Deficiency': {
         diagnosis: 'Potassium Deficiency Detected',
         icon: '🌾',
-        causes: [
-            'Sandy or light-textured soils with low potassium retention',
-            'Excessive rainfall or irrigation causing leaching',
-            'High magnesium or calcium levels competing with potassium',
-            'Continuous cropping without adequate fertilization',
-            'Poor drainage leading to potassium loss'
-        ],
-        prevention: [
-            'Apply potassium-rich fertilizers before heavy rainfall',
-            'Use mulching to reduce leaching losses',
-            'Maintain balanced fertilization (NPK ratio)',
-            'Improve soil structure with organic matter',
-            'Monitor and adjust irrigation to prevent excessive leaching'
-        ],
         nutrients: {
-            nitrogen: {
-                name: 'Nitrogen (N)',
-                symbol: 'N',
-                status: 'sufficient',
-                description: 'Nitrogen levels are within acceptable range.'
-            },
-            phosphorus: {
-                name: 'Phosphorus (P)',
-                symbol: 'P',
-                status: 'sufficient',
-                description: 'Phosphorus levels are adequate.'
-            },
-            potassium: {
-                name: 'Potassium (K)',
-                symbol: 'K',
-                status: 'needed',
-                description: 'Severe deficiency detected. Potassium is crucial for disease resistance and fruit quality.'
-            },
-            boron: {
-                name: 'Boron (B)',
-                symbol: 'B',
-                status: 'sufficient',
-                description: 'Boron levels are satisfactory.'
-            }
+            nitrogen: { name: 'Nitrogen (N)', symbol: 'N', status: 'sufficient', description: 'Nitrogen levels are within acceptable range.' },
+            phosphorus: { name: 'Phosphorus (P)', symbol: 'P', status: 'sufficient', description: 'Phosphorus levels are adequate.' },
+            potassium: { name: 'Potassium (K)', symbol: 'K', status: 'needed', description: 'Severe deficiency detected. Potassium is crucial for disease resistance and fruit quality.' }
         },
         treatment: [
             'Apply potassium fertilizer (MOP or SOP) at 60-80 kg K₂O/ha',
@@ -165,39 +451,10 @@ const NUTRIENT_INFO = {
     'Healthy': {
         diagnosis: 'Healthy Leaf - No Deficiency',
         icon: '✅',
-        causes: [],
-        prevention: [
-            'Continue current nutrient management practices',
-            'Regular soil testing every 6-12 months',
-            'Maintain consistent watering schedule',
-            'Monitor plant health for early detection of issues',
-            'Keep records of fertilization and crop performance'
-        ],
         nutrients: {
-            nitrogen: {
-                name: 'Nitrogen (N)',
-                symbol: 'N',
-                status: 'sufficient',
-                description: 'Optimal nitrogen levels detected. Continue current fertilization.'
-            },
-            phosphorus: {
-                name: 'Phosphorus (P)',
-                symbol: 'P',
-                status: 'sufficient',
-                description: 'Phosphorus levels are excellent.'
-            },
-            potassium: {
-                name: 'Potassium (K)',
-                symbol: 'K',
-                status: 'sufficient',
-                description: 'Potassium levels are optimal.'
-            },
-            boron: {
-                name: 'Boron (B)',
-                symbol: 'B',
-                status: 'sufficient',
-                description: 'All micronutrients are well-balanced.'
-            }
+            nitrogen: { name: 'Nitrogen (N)', symbol: 'N', status: 'sufficient', description: 'Optimal nitrogen levels detected. Continue current fertilization.' },
+            phosphorus: { name: 'Phosphorus (P)', symbol: 'P', status: 'sufficient', description: 'Phosphorus levels are excellent.' },
+            potassium: { name: 'Potassium (K)', symbol: 'K', status: 'sufficient', description: 'Potassium levels are optimal.' }
         },
         treatment: [
             'Maintain current fertilization schedule',
@@ -209,307 +466,144 @@ const NUTRIENT_INFO = {
     }
 };
 
-// ===== DOM Elements =====
-const elements = {
-    uploadArea: document.getElementById('uploadArea'),
-    uploadPlaceholder: document.getElementById('uploadPlaceholder'),
-    fileInput: document.getElementById('fileInput'),
-    imagePreview: document.getElementById('imagePreview'),
-    previewImage: document.getElementById('previewImage'),
-    removeBtn: document.getElementById('removeBtn'),
-    analyzeBtn: document.getElementById('analyzeBtn'),
-    resultsSection: document.getElementById('resultsSection'),
-    recommendationsSection: document.getElementById('recommendationsSection'),
-    statusIcon: document.getElementById('statusIcon'),
-    diagnosisText: document.getElementById('diagnosisText'),
-    confidenceValue: document.getElementById('confidenceValue'),
-    confidenceFill: document.getElementById('confidenceFill'),
-    recommendationsGrid: document.getElementById('recommendationsGrid'),
-    treatmentInfo: document.getElementById('treatmentInfo')
-};
-
-// ===== State Management =====
-let currentFile = null;
-
-// ===== Event Listeners =====
-function initializeEventListeners() {
-    // Upload area click
-    elements.uploadArea.addEventListener('click', (e) => {
-        if (e.target !== elements.removeBtn && !elements.removeBtn.contains(e.target)) {
-            elements.fileInput.click();
-        }
-    });
-
-    // File input change
-    elements.fileInput.addEventListener('change', handleFileSelect);
-
-    // Drag and drop
-    elements.uploadArea.addEventListener('dragover', handleDragOver);
-    elements.uploadArea.addEventListener('dragleave', handleDragLeave);
-    elements.uploadArea.addEventListener('drop', handleDrop);
-
-    // Remove button
-    elements.removeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        removeImage();
-    });
-
-    // Analyze button
-    elements.analyzeBtn.addEventListener('click', analyzeImage);
-}
-
 // ===== File Handling Functions =====
 function handleFileSelect(e) {
     const file = e.target.files[0];
-    if (file) {
-        validateAndDisplayFile(file);
-    }
+    if (file) validateAndDisplayFile(file);
 }
 
 function handleDragOver(e) {
     e.preventDefault();
-    elements.uploadArea.classList.add('drag-over');
+    if (window.predictionElements?.uploadArea) {
+        window.predictionElements.uploadArea.classList.add('drag-over');
+    }
 }
 
 function handleDragLeave(e) {
     e.preventDefault();
-    elements.uploadArea.classList.remove('drag-over');
+    if (window.predictionElements?.uploadArea) {
+        window.predictionElements.uploadArea.classList.remove('drag-over');
+    }
 }
 
 function handleDrop(e) {
     e.preventDefault();
-    elements.uploadArea.classList.remove('drag-over');
-
-    const file = e.dataTransfer.files[0];
-    if (file) {
-        validateAndDisplayFile(file);
+    if (window.predictionElements?.uploadArea) {
+        window.predictionElements.uploadArea.classList.remove('drag-over');
     }
+    const file = e.dataTransfer.files[0];
+    if (file) validateAndDisplayFile(file);
 }
 
 function validateAndDisplayFile(file) {
-    // Validate file type
     if (!CONFIG.acceptedFormats.includes(file.type)) {
-        showError('Please upload a PNG or JPEG image file.');
+        alert('Please upload a PNG or JPEG image file.');
         return;
     }
-
-    // Validate file size
     if (file.size > CONFIG.maxFileSize) {
-        showError('File size exceeds 10MB limit.');
+        alert('File size exceeds 10MB limit.');
         return;
     }
-
-    currentFile = file;
+    window.currentFile = file;
     displayImage(file);
 }
 
 function displayImage(file) {
     const reader = new FileReader();
+    const elements = window.predictionElements;
+    if (!elements) return;
 
     reader.onload = (e) => {
         elements.previewImage.src = e.target.result;
         elements.uploadPlaceholder.style.display = 'none';
         elements.imagePreview.style.display = 'block';
         elements.analyzeBtn.disabled = false;
-
-        // Hide previous results
         elements.resultsSection.style.display = 'none';
         elements.recommendationsSection.style.display = 'none';
     };
-
     reader.readAsDataURL(file);
 }
 
 function removeImage() {
-    currentFile = null;
+    const elements = window.predictionElements;
+    if (!elements) return;
+
+    window.currentFile = null;
     elements.fileInput.value = '';
     elements.uploadPlaceholder.style.display = 'flex';
     elements.imagePreview.style.display = 'none';
     elements.previewImage.src = '';
     elements.analyzeBtn.disabled = true;
-
-    // Hide results
     elements.resultsSection.style.display = 'none';
     elements.recommendationsSection.style.display = 'none';
 }
 
-// ===== Server Warm-up Function =====
-async function warmUpServer() {
-    try {
-        console.log('Warming up server...');
-        await fetch(CONFIG.healthEndpoint, {
-            method: 'GET',
-            cache: 'no-store'
-        });
-        console.log('Server warmed up');
-    } catch (e) {
-        console.warn('Warm-up failed (safe to ignore):', e);
-    }
-}
-
 // ===== Analysis Functions =====
 async function analyzeImage() {
-    if (!currentFile) return;
+    if (!window.currentFile || !window.predictionElements) return;
 
-    // Show loading state
+    const elements = window.predictionElements;
     elements.analyzeBtn.classList.add('loading');
     elements.analyzeBtn.disabled = true;
-    const btnText = elements.analyzeBtn.querySelector('.btn-text');
-    const originalText = btnText.textContent;
 
     try {
-        // Wake up Render service first (reduces timeout failures by ~80%)
-        btnText.textContent = 'Waking up server...';
-        await warmUpServer();
-        
-        // Small delay to ensure server is ready
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Call real API endpoint
-        btnText.textContent = 'Analyzing...';
-        const result = await callPredictionAPI(currentFile);
+        const formData = new FormData();
+        formData.append('file', window.currentFile);
+        const response = await fetch(CONFIG.apiEndpoint, { method: 'POST', body: formData });
 
-        // Display results
+        if (!response.ok) throw new Error('API request failed');
+        const result = await response.json();
         displayResults(result);
     } catch (error) {
-        console.error('Detailed Analysis Error:', error);
-        let errorMsg = 'Analysis failed. ';
-        
-        if (error.message.includes('timeout')) {
-            errorMsg += error.message + '\n\nThe first prediction after cold start can take 60-120 seconds. Please wait for the prediction to complete or try again.';
-        } else if (error.message.includes('Network error') || error.message.includes('fetch')) {
-            errorMsg += error.message + '\n\nPlease verify:\n1. The backend is deployed on Render\n2. The API URL is correct\n3. CORS is properly configured';
-        } else if (error.message.includes('CORS')) {
-            errorMsg += 'CORS error: The backend server is not allowing requests from this domain.';
-        } else {
-            errorMsg += error.message;
-        }
-        
-        showError(errorMsg + '\n\nCheck the browser console (F12) for technical details.');
+        alert('Analysis failed. Please make sure the backend server is running on http://localhost:5000');
+        console.error('Analysis error:', error);
     } finally {
         elements.analyzeBtn.classList.remove('loading');
         elements.analyzeBtn.disabled = false;
-        const btnText = elements.analyzeBtn.querySelector('.btn-text');
-        btnText.textContent = 'Analyze Leaf';
     }
 }
 
-// Mock prediction function - Kept for testing without backend
-async function mockPrediction(file) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Mock predictions (randomly select one for demo)
-    const predictions = ['N_Deficiency', 'P_Deficiency', 'K_Deficiency', 'Healthy'];
-    const randomPrediction = predictions[Math.floor(Math.random() * predictions.length)];
-
-    return {
-        prediction: randomPrediction,
-        confidence: 0.85 + Math.random() * 0.14 // Random confidence between 85-99%
-    };
-}
-
-// Real API call function
-async function callPredictionAPI(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Create AbortController for timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 180000); // 180 second timeout (matches Gunicorn timeout)
-
-    try {
-        const response = await fetch(CONFIG.apiEndpoint, {
-            method: 'POST',
-            body: formData,
-            signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            let errorMessage = `API request failed with status ${response.status}`;
-            try {
-                const errorJson = JSON.parse(errorText);
-                errorMessage = errorJson.error || errorMessage;
-            } catch (e) {
-                errorMessage = errorText || errorMessage;
-            }
-            throw new Error(errorMessage);
-        }
-
-        return await response.json();
-    } catch (error) {
-        clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-            throw new Error('Request timeout: The server is taking too long to respond. This might be due to the server starting up (cold start). Please try again in a moment.');
-        } else if (error.message.includes('fetch')) {
-            throw new Error('Network error: Could not connect to the backend server. Please check if the server is running.');
-        }
-        throw error;
-    }
-}
-
-// ===== Display Functions =====
 function displayResults(result) {
+    const elements = window.predictionElements;
+    if (!elements) return;
+
     const { prediction, confidence } = result;
     const info = NUTRIENT_INFO[prediction];
-
     if (!info) {
-        showError('Unknown prediction result');
+        alert('Unknown prediction result');
         return;
     }
 
-    // Update diagnosis
     elements.diagnosisText.textContent = info.diagnosis;
     elements.statusIcon.textContent = info.icon;
+    elements.statusIcon.className = 'status-icon ' + (prediction === 'Healthy' ? 'healthy' : 'deficiency');
 
-    // Set status icon class
-    elements.statusIcon.className = 'status-icon';
-    if (prediction === 'Healthy') {
-        elements.statusIcon.classList.add('healthy');
-    } else {
-        elements.statusIcon.classList.add('deficiency');
-    }
-
-    // Update confidence
     const confidencePercent = Math.round(confidence * 100);
     elements.confidenceValue.textContent = `${confidencePercent}%`;
+    setTimeout(() => { elements.confidenceFill.style.width = `${confidencePercent}%`; }, 100);
 
-    // Animate confidence bar
-    setTimeout(() => {
-        elements.confidenceFill.style.width = `${confidencePercent}%`;
-    }, 100);
-
-    // Display nutrient recommendations
     displayNutrientRecommendations(info.nutrients);
+    displayTreatmentInfo(info.treatment);
 
-    // Display treatment information with causes and prevention
-    displayTreatmentInfo(info);
-
-    // Show results sections with animation
     elements.resultsSection.style.display = 'block';
     elements.recommendationsSection.style.display = 'block';
 
-    // Scroll to results
     setTimeout(() => {
         elements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 300);
 }
 
 function displayNutrientRecommendations(nutrients) {
-    elements.recommendationsGrid.innerHTML = '';
+    const elements = window.predictionElements;
+    if (!elements?.recommendationsGrid) return;
 
+    elements.recommendationsGrid.innerHTML = '';
     Object.entries(nutrients).forEach(([key, nutrient]) => {
         const card = document.createElement('div');
         card.className = 'nutrient-card';
-
         card.innerHTML = `
             <div class="nutrient-header">
-                <div class="nutrient-icon ${key}">
-                    ${nutrient.symbol}
-                </div>
+                <div class="nutrient-icon ${key}">${nutrient.symbol}</div>
                 <div class="nutrient-name">${nutrient.name}</div>
             </div>
             <div class="nutrient-status ${nutrient.status}">
@@ -517,65 +611,20 @@ function displayNutrientRecommendations(nutrients) {
             </div>
             <div class="nutrient-description">${nutrient.description}</div>
         `;
-
         elements.recommendationsGrid.appendChild(card);
     });
 }
 
-function displayTreatmentInfo(info) {
-    let html = '';
+function displayTreatmentInfo(treatments) {
+    const elements = window.predictionElements;
+    if (!elements?.treatmentInfo) return;
 
-    // Add causes section if available
-    if (info.causes && info.causes.length > 0) {
-        const causesList = info.causes.map(cause =>
-            `<li>${cause}</li>`
-        ).join('');
-
-        html += `
-            <div class="info-section">
-                <h4>🔍 Possible Causes</h4>
-                <ul>${causesList}</ul>
-            </div>
-        `;
-    }
-
-    // Add prevention section
-    if (info.prevention && info.prevention.length > 0) {
-        const preventionList = info.prevention.map(item =>
-            `<li>${item}</li>`
-        ).join('');
-
-        html += `
-            <div class="info-section">
-                <h4>🛡️ Prevention Methods</h4>
-                <ul>${preventionList}</ul>
-            </div>
-        `;
-    }
-
-    // Add treatment section
-    const treatmentList = info.treatment.map(treatment =>
-        `<li>${treatment}</li>`
-    ).join('');
-
-    html += `
-        <div class="info-section">
-            <h4>🌱 Recommended Actions</h4>
-            <ul>${treatmentList}</ul>
-        </div>
-    `;
-
-    elements.treatmentInfo.innerHTML = html;
-}
-
-// ===== Utility Functions =====
-function showError(message) {
-    // Simple alert for now - can be replaced with a custom modal
-    alert(message);
+    const treatmentList = treatments.map(t => `<li>${t}</li>`).join('');
+    elements.treatmentInfo.innerHTML = `<h4>Recommended Actions</h4><ul>${treatmentList}</ul>`;
 }
 
 // ===== Initialize Application =====
 document.addEventListener('DOMContentLoaded', () => {
-    initializeEventListeners();
+    Router.init();
     console.log('Coffee Leaf Nutrition Prediction System initialized');
 });

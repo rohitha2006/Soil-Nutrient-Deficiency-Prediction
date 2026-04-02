@@ -2,7 +2,7 @@
 const CONFIG = {
     maxFileSize: 10 * 1024 * 1024, // 10MB
     acceptedFormats: ['image/png', 'image/jpeg', 'image/jpg'],
-    apiEndpoint: 'https://coffee-nutrition.onrender.com/predict', // Update this with your actual API endpoint
+    apiEndpoint: 'http://127.0.0.1:5000/predict', // Update this with your actual API endpoint
 };
 
 // ===== Nutrient Information Database =====
