@@ -182,12 +182,7 @@ const Router = {
                                 <li><strong>AI Analysis:</strong> Our model analyzes leaf color, texture, and patterns</li>
                                 <li><strong>Detection:</strong> Identifies specific nutrient deficiencies (N, P, K)</li>
                                 <li><strong>Recommendations:</strong> Provides targeted treatment recommendations</li>
-                            </ol>
-                            <div style="margin-top: 1.5rem;">
-                                <a href="/prediction" class="btn btn-primary" data-route="/prediction">
-                                    Try Prediction Now →
-                                </a>
-                            </div>
+                            </ol
                         </div>
                     </section>
 
