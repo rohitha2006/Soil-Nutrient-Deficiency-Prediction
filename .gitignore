@@ -1,11 +1,4 @@
-myenv/
 .venv/
-tfenv/
 __pycache__/
 *.pyc
 .env
-.DS_Store
-node_modules/
-.vercel
-*.log
-g
